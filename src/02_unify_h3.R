@@ -1,6 +1,7 @@
 library(tidyverse)
 library(sf)
 library(plotly)
+library(patchwork)
 
 exp <- read_sf('./data/proc/oede_naf.geojson')
 h3 <- read_sf('./data/raw/h3_geoms.geojson') %>% st_set_crs(st_crs(exp))
@@ -29,26 +30,35 @@ nafs_asal_prov <- exp %>%
         group_by(provincia, tam_empleo) %>%
         summarise(n=n()) %>%
         mutate(n_prov = sum(n),
-                prop = n/n_prov*100)
-
-nafs_asal_prov %>%
+                prop = n/n_prov*100) %>%
+        ungroup() %>%
         filter(tam_empleo == "Con asal.") %>% 
+        mutate(prop_camb = n / sum(n)*100) %>%
+        arrange(desc(prop_camb)) 
+
+
+(nafs_asal_prov %>%
         ggplot() + 
                 geom_col(aes(x=prop, y=reorder(provincia, prop)),
                          show.legend = FALSE) +
                 theme_minimal() +
-                labs(x="% NAFs que contratan asal. (est.)",
-                     y="Provincia")
-
-nafs_asal_prov %>%
-        filter(tam_empleo == "Con asal.") %>% 
+                labs(title="% NAFs corr. sobre total NAFs de la provincia",
+                     y="Provincia",
+                     x="%")
+) + 
+(nafs_asal_prov %>%
         ggplot() + 
-        geom_point(aes(x=n_prov, y=prop),
+        geom_col(aes(x=prop_camb, y=reorder(provincia, prop_camb)),
                  show.legend = FALSE) +
         theme_minimal() +
-        labs(x="% NAFs que contratan asal. (est.)",
-             y="Provincia")
-        
+        labs(title="% NAFs corregidos por provincia sobre total NAFs corregidos",
+             y="Provincia",
+             x="%")
+)  +
+        plot_layout(axis="collect")
+
+
+table(exp$tam_empleo, exp$tipo)
 
 exp_2_h3 <- exp %>%
         drop_na(h3) %>%
