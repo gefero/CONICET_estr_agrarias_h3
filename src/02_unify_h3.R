@@ -51,12 +51,15 @@ nafs_asal_prov <- exp %>%
         geom_col(aes(x=prop_camb, y=reorder(provincia, prop_camb)),
                  show.legend = FALSE) +
         theme_minimal() +
-        labs(title="% NAFs corregidos por provincia sobre total NAFs corregidos",
+        labs(title="% NAFs corr. por provincia sobre total NAFs corr.",
              y="Provincia",
              x="%")
 )  +
         plot_layout(axis="collect")
 
+ggsave('./plots/grafico1.png',
+       width = 12, height = 6,
+       bg="white")
 
 table(exp$tam_empleo, exp$tipo)
 

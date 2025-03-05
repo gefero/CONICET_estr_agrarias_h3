@@ -14,9 +14,6 @@ h3 <- read_sf('./data/raw/h3_geoms.geojson')
 h3 <- h3 %>%
         left_join(exp_clst)
 
-
-        
-
 h3 %>%
         drop_na() %>%
         filter(hc_clst_7 %in% c(4)) %>%
@@ -98,10 +95,6 @@ clst_labels <- tibble(
 micro_palette <- c('#762a83','#9970ab','#c2a5cf',
                    '#a6dba0','#5aae61','#1b7837','#00441b')
 
-grey_scale <- c("#dddddd", "#c8c8c8", "#b4b4b4",
-                "#797979", "#6b6b6b", "#5d5d5d","#4f4f4f")
-
-
 ind_list <- val_cst_7$indicator %>% unique()
 patt <- paste0("prop_(.*)_", "mean")
 
@@ -128,7 +121,7 @@ val_cst_7 %>%
               strip.text.x = element_text(size=8),
               axis.title = element_text(size=7))
 
-ggsave('./cap5/plots/54_caract_clst_mean.png', 
+ggsave('./plots/grafico2.png', 
        width = 11, height = 13,
        bg="white")
 
@@ -142,7 +135,7 @@ exp_clst %>%
         ggplot() + 
         geom_boxplot(aes(x=name, y=round(100*value,2), fill=hc_clst_7_labels),
                      show.legend = FALSE) + 
-        scale_fill_manual(values=grey_scale) +
+        scale_fill_manual(values=micro_palette) +
         coord_flip() +
         facet_wrap(~hc_clst_7_labels) + 
         labs(x="Indicador",
@@ -154,7 +147,7 @@ exp_clst %>%
               axis.title = element_text(size=7))
 
 
-ggsave('./cap5/plots/55_caract_clst_boxplot.svg', 
+ggsave('./plots/grafico5.png', 
        width = 10, height = 12,
        bg="white")
 
@@ -171,12 +164,12 @@ tictoc::toc()
 
 #write_sf(h3, './cap5/data/proc/v2_estab_to_h3_pca_clust_depto.geojson')
 
-pais_malv <- read_sf('./cap5/data/raw/pais_malvinas.geojson')
-h3 <- read_sf('./cap5/data/proc/v2_estab_to_h3_pca_clust_depto.geojson')
+h32 <- read_sf('data/proc/v2_estab_to_h3_pca_clust_depto.geojson')
+pais_malv <- read_sf('./data/raw/pais_malvinas.geojson')
+#h3 <- read_sf('./cap5/data/proc/v2_estab_to_h3_pca_clust_depto.geojson')
 
 
-
-h3 %>% 
+h32 %>% 
         drop_na(total) %>% 
         st_set_geometry(NULL) %>% 
         left_join(clst_labels) %>%
@@ -194,25 +187,9 @@ h3 %>%
                      fill="Microestructuras")
 
 
-ggsave('./cap5/plots/v256_clst_estr_agr.png', 
+ggsave('./plots/grafico3.png', 
        width = 10, height = 6,
        bg="white")
-
-
-ggplot() + 
-        geom_sf(data=pais_malv, fill=NA) +
-        geom_sf(data=est_soc %>%
-                        group_by(provincia_cna18) %>%
-                        summarise(), fill=NA
-                ) +
-                geom_sf(
-                        data = h3 %>% 
-                                drop_na(total) %>%
-                                left_join(clst_labels),
-                        aes(fill=hc_clst_7_labels), color=NA) +
-                scale_fill_manual(values=micro_palette) +
-        labs(fill="Microestructuras") +
-        theme_minimal()
 
 
 ggplot() + 
@@ -231,24 +208,6 @@ ggplot() +
         labs(fill="Microestructuras") +
         theme_minimal()
 
-
-ggsave('./cap5/plots/57_clst_estr_agr.png', width = 8, height = 10)
-
-sta_fe_pol <- est_soc %>%
-        group_by(provincia_cna18) %>%
-        summarise() %>%
-        filter(provincia_cna18=="santa fe")
-
-sta_fe <- h3 %>% 
-        drop_na(total) %>%
-        left_join(clst_labels) %>%
-        st_filter(sta_fe_pol)
-                
-
-ggplot() + 
-        geom_sf(data=est_soc %>% filter(provincia_cna18=="santa fe"), fill=NA) + 
-        geom_sf(data=sta_fe, aes(fill=hc_clst_7_labels), color=NA) +
-        scale_fill_manual(values=micro_palette) +
-        labs(fill="Microestructuras") +
-        theme_minimal()
-
+ggsave('./plots/mapa1.png', 
+       width = 10, height = 6,
+       bg="white")
