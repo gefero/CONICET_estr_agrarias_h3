@@ -56,4 +56,4 @@ exp_clst <- exp_clst %>%
                 hc_clst_7 = cutree(hc1, k=7)
         )
 
-write_csv(exp_clst, './cap5/data/proc/v2_estab_to_h3_pca_clust.csv')
+write_csv(exp_clst, './data/proc/v2_estab_to_h3_pca_clust.csv')

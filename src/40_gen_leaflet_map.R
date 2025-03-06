@@ -18,7 +18,7 @@ macro_estr <- est_soc %>%
         group_by(cluster2) %>%
         summarise()
 
-h3 <- read_sf('./cap_5/data/proc/v2_estab_to_h3_pca_clust_depto.geojson') %>%
+h3 <- read_sf('./data/proc/v2_estab_to_h3_pca_clust_depto.geojson') %>%
         select(h3, link, total:prop_ganaderia, hc_clst_7, cluster2)
 
 h3 <- h3 %>%

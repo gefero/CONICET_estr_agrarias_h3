@@ -1,7 +1,7 @@
 library(tidyverse)
 library(sf)
 
-deptos <- read_sf('./cap5/data/raw/pxdptodatosok.shp') %>% 
+deptos <- read_sf('./data/raw/pxdptodatosok.shp') %>% 
                         st_make_valid() 
 
 
@@ -17,7 +17,7 @@ deptos <- deptos %>%
 
 deptos[!st_is_valid(deptos),]
 
-naf <- read_sf('./cap5/data/raw/renaf_2.json') %>%
+naf <- read_sf('./data/raw/renaf_2.json') %>%
         rename(tam_superf = superf,
                provincia=pcia,
                departamento=dpto,
@@ -96,7 +96,7 @@ fallos <- naf %>%
 
 # ARREGLAR BIEN LOS LINKS
 
-estab <- read_csv('./cap5/data/raw/distribucion_establecimientos_productivos.csv') %>%
+estab <- read_csv('./data/raw/distribucion_establecimientos_productivos.csv') %>%
         rename(id=ID,
                link=in_departamentos,
                 tam_empleo= empleo) %>%
@@ -123,7 +123,7 @@ estab <- estab %>% st_set_crs(st_crs(naf))
 estab_agr <- estab %>%
                 filter(letra=="A")
 
-clanae <- read_csv('./cap5/data/raw/recod_actividades_establecimientos.csv') %>%
+clanae <- read_csv('./data/raw/recod_actividades_establecimientos.csv') %>%
         select(-X9, -X10)
 
 estab_agr <- estab_agr %>%
@@ -157,5 +157,5 @@ oede_naf %>%
 names(estab) 
 names(naf)
 
-write_sf(oede_naf, './cap5/data/proc/oede_naf.geojson')
+write_sf(oede_naf, './data/proc/oede_naf.geojson')
 
